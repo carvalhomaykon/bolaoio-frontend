@@ -5,6 +5,8 @@ import { Register } from '../pages/login/Register.jsx'
 import { AuthLayout } from '../pages/login/AuthLayout.jsx'
 import { Dashboard } from '../pages/dashboard/Dashboard.jsx';
 import { ProtectedRoute } from './ProtectedRoute.jsx';
+import { Wallet } from '../pages/wallet/Wallet.jsx';
+import { PagesLayout } from '../pages/page-layout/PageLayout.jsx';
 
 export function AppRoutes() {
     return (
@@ -17,8 +19,11 @@ export function AppRoutes() {
                     <Route path="/register" element={<Register />} />
                 </Route>
 
-                <Route element={<ProtectedRoute/>}>
-                    <Route path="/dashboard" element={<Dashboard />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<PagesLayout />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/carteira" element={<Wallet />} />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
