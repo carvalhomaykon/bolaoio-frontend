@@ -14,6 +14,7 @@ export const authService = {
             }
 
             localStorage.setItem("token", token);
+            localStorage.setItem("nome", response.data.nome);
 
         } catch (error) {
             throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
@@ -28,5 +29,10 @@ export const authService = {
         } catch (error) {
             throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
         }
+    },
+
+    isAuthenticated: () => {
+        const token = localStorage.getItem("token");
+        return !!token;
     }
 }

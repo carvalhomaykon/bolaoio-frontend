@@ -1,0 +1,66 @@
+{
+  "campeonato": "Copa do Mundo FIFA 2026",
+  "total_jogos": 3,
+  "jogos": [
+    {
+      "id": 101,
+      "data_hora": "2026-06-11T16:00:00Z",
+      "estadio": "Azteca",
+      "cidade": "Cidade do México",
+      "fase": "Grupo A",
+      "status": "Finalizado",
+      "time_mandante": {
+        "id": "MEX",
+        "nome": "México",
+        "bandeira": "https://api.exemplo.com/flags/mex.png",
+        "gols": 2
+      },
+      "time_visitante": {
+        "id": "USA",
+        "nome": "Estados Unidos",
+        "bandeira": "https://api.exemplo.com/flags/usa.png",
+        "gols": 1
+      }
+    },
+    {
+      "id": 102,
+      "data_hora": "2026-06-12T13:00:00Z",
+      "estadio": "SoFi Stadium",
+      "cidade": "Los Angeles",
+      "fase": "Grupo B",
+      "status": "Agendado",
+      "time_mandante": {
+        "id": "BRA",
+        "nome": "Brasil",
+        "bandeira": "https://api.exemplo.com/flags/bra.png",
+        "gols": null
+      },
+      "time_visitante": {
+        "id": "FRA",
+        "nome": "França",
+        "bandeira": "https://api.exemplo.com/flags/fra.png",
+        "gols": null
+      }
+    },
+    {
+      "id": 103,
+      "data_hora": "2026-06-12T20:00:00Z",
+      "estadio": "MetLife Stadium",
+      "cidade": "Nova York",
+      "fase": "Grupo C",
+      "status": "Em Andamento",
+      "time_mandante": {
+        "id": "ARG",
+        "nome": "Argentina",
+        "bandeira": "https://api.exemplo.com/flags/arg.png",
+        "gols": 1
+      },
+      "time_visitante": {
+        "id": "ESP",
+        "nome": "Espanha",
+        "bandeira": "https://api.exemplo.com/flags/esp.png",
+        "gols": 1
+      }
+    }
+  ]
+}

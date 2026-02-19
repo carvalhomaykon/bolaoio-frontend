@@ -1,9 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { authService } from "../../services/authService";
 
 export function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isAuthenticated = authService.isAuthenticated(); 
+
+      if (isAuthenticated) {
+        navigate("/dashboard", { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const [formData, setFormData] = useState({
     email: '',

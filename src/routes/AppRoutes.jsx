@@ -7,6 +7,7 @@ import { Dashboard } from '../pages/dashboard/Dashboard.jsx';
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 import { Wallet } from '../pages/wallet/Wallet.jsx';
 import { PagesLayout } from '../pages/page-layout/PageLayout.jsx';
+import { Bolao } from '../pages/bolao/Bolao.jsx';
 
 export function AppRoutes() {
     return (
@@ -23,6 +24,7 @@ export function AppRoutes() {
                     <Route element={<PagesLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/carteira" element={<Wallet />} />
+                        <Route path="/bolao" element={<Bolao />} />
                     </Route>
                 </Route>
             </Routes>
