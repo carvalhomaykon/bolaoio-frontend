@@ -36,9 +36,11 @@ export function Aside({ balance }) {
                     <i className="fa-solid fa-house w-5"></i> Painel da Copa
                 </Link>
 
-                <button onclick="router('my-bets')" className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-700 text-gray-300 hover:text-white transition flex items-center gap-3">
+                <Link
+                    to="/palpite" 
+                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-700 text-gray-300 hover:text-white transition flex items-center gap-3">
                     <i className="fa-solid fa-ticket w-5"></i> Meus Palpites
-                </button>
+                </Link>
 
                 <Link 
                     to="/carteira" 

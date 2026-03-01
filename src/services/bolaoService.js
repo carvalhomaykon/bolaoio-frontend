@@ -18,5 +18,18 @@ export const bolaoService = {
         catch (error) {
             throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
         }
+    },
+    getBolaoById: async (id) => {
+        try {
+            const response = await api.get('/bolao/', {
+                params: {
+                    id: id
+                }
+            });
+            return response.data;
+        }
+        catch (error) {
+            throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
+        }
     }
 }

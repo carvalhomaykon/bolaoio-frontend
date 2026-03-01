@@ -1,7 +1,41 @@
 import { FeaturedGames } from "./components/FeaturedGames"
 import { OpenBoloes } from "./components/OpenBoloes"
+import { bolaoService } from "../../services/bolaoService"
+import { partidaService } from "../../services/partidaService"
+import { useState, useEffect } from "react"
 
 export function Dashboard() {
+
+    const [boloes, setBoloes] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [partidas, setPartidas] = useState([])
+
+    useEffect(() => {
+        bolaoService.getAllBoloes()
+            .then(res => {
+                console.log("Resposta da API:", res)
+                setBoloes(res)
+                console.log("Boloes encontrados:", res)
+            })
+            .catch(err => {
+                console.error("Erro ao buscar bolões:", err)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
+    }, [])
+
+    useEffect(() => {
+        partidaService.getAllPartidas()
+            .then(res => {
+                console.log("Partidas encontradas:", res)
+                setPartidas(res)
+            })
+            .catch(err => {
+                console.error("Erro ao buscar partidas:", err)
+            })
+    }, [])
+
     return (    
         <div id="app-content" className="flex-1 overflow-y-auto p-6 bg-dark scroll-smooth">
             <div id="view-home" className="fade-in">
@@ -26,9 +60,16 @@ export function Dashboard() {
                     </div>
                 </div>
                 
-                <FeaturedGames/>
+                <FeaturedGames games={partidas} />
 
-                <OpenBoloes/>
+                {isLoading ? (
+                    <div className="py-10 text-center text-gray-400">
+                        <i className="fa-solid fa-circle-notch animate-spin mr-2"></i>
+                        Carregando bolões...
+                    </div>
+                ) : (
+                    <OpenBoloes items={boloes} />
+                )}
             </div>
         </div>
     )

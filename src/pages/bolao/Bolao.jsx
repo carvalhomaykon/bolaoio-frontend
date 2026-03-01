@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import dadosJogos from './jogos.json';
 import { FootballGames } from './components/FootballGames';
+import { bolaoService } from '../../services/bolaoService';
 
 export function Bolao() {
     const [matches, setMatches] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
 
     const [formData, setFormData] = useState({
-        name: '',
-        type: 'match',
-        visibility: 'private',
-        maxParticipants: '',
-        startDate: '',
-        endDate: '',
-        entryFee: ''
+        nome: '',
+        visibilidade: 0,
+        valor: '',
+        dtFechamento: '',
+        tipoBolao: 0,
+        partidaId: '',
+        maxParticipantes: ''
     });
 
     useEffect(() => {
@@ -27,12 +28,18 @@ export function Bolao() {
 
     const handleGameSelect = (game) => {
         setSelectedGame(game);
-        if (!formData.name || formData.name.startsWith('Bolão')) {
-             setFormData(prev => ({
-                 ...prev, 
-                 name: `Bolão ${game.time_mandante.nome} x ${game.time_visitante.nome}`,
-                 endDate: game.data_hora.slice(0, 16) // Sugere o fechamento para a hora do jogo
-             }));
+
+        if (!formData.nome || formData.nome.startsWith('Bolão')) {
+            const novoNome = (!formData.nome || formData.nome.startsWith('Bolão')) 
+                ? `Bolão ${game.time_mandante.nome} x ${game.time_visitante.nome}` 
+                : formData.nome;
+
+            setFormData(prev => ({
+                ...prev,
+                nome: novoNome,
+                partidaId: game.id,
+                dtFechamento: game.data_hora.slice(0, 10)
+            }));
         }
     };
 
@@ -42,7 +49,29 @@ export function Bolao() {
             alert("Por favor, selecione uma partida para o bolão.");
             return;
         }
-        console.log("Dados do Bolão:", { ...formData, gameId: selectedGame.id });
+
+        console.log("Dados do formulário antes do envio:", formData);
+
+        const payload = {
+            nome: formData.nome,
+            visibilidade: parseInt(formData.visibilidade),
+            valor: parseFloat(formData.valor),
+            dtFechamento: formData.dtFechamento.data_hora.slice(0, 10),
+            tipoBolao: parseInt(formData.tipoBolao),
+            partidaId: formData.partidaId,
+            maxParticipantes: formData.maxParticipantes ? parseInt(formData.maxParticipantes) : null
+        };
+
+        console.log("Payload para criação do bolão:", payload);
+
+        bolaoService.createBolao(payload)
+            .then(response => {
+                alert("Bolão criado com sucesso!");
+            })
+            .catch(error => {
+                console.error("Erro ao criar bolão:", error);
+                alert("Ocorreu um erro ao criar o bolão. Tente novamente.");
+            });
     };
 
     return (
@@ -66,10 +95,10 @@ export function Bolao() {
                             <div className="md:col-span-2">
                                 <label className="block text-sm text-gray-400 mb-1">Nome do Bolão</label>
                                 <input 
-                                    name="name"
+                                    name="nome"
                                     type="text" 
                                     required 
-                                    value={formData.name}
+                                    value={formData.nome}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none transition" 
                                     placeholder="Ex: Amigos do Futebol - Copa 2026" 
@@ -79,35 +108,35 @@ export function Bolao() {
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Tipo de Aposta</label>
                                 <select 
-                                    name="type"
-                                    value={formData.type}
+                                    name="tipoBolao"
+                                    value={formData.tipoBolao}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none"
                                 >
-                                    <option value="match">Jogo Único (1x1)</option>
-                                    <option value="championship">Campeão / Longo Prazo</option>
+                                    <option value={0}>Jogo Único (1x1)</option>
+                                    <option value={1}>Campeão / Longo Prazo</option>
                                 </select>
                             </div>
 
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Visibilidade</label>
                                 <select 
-                                    name="visibility"
-                                    value={formData.visibility}
+                                    name="visibilidade"
+                                    value={formData.visibilidade}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none"
                                 >
-                                    <option value="private">🔒 Privado (Apenas Convite)</option>
-                                    <option value="public">🌎 Público (Listado na Home)</option>
+                                    <option value={0}>🔒 Privado (Apenas Convite)</option>
+                                    <option value={1}>🌎 Público (Listado na Home)</option>
                                 </select>
                             </div>
 
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Limite de Participantes</label>
                                 <input 
-                                    name="maxParticipants"
-                                    type="number" 
-                                    value={formData.maxParticipants}
+                                    name="maxParticipantes"
+                                    type="number"
+                                    value={formData.maxParticipantes}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none" 
                                     placeholder="Sem limite" 
@@ -123,22 +152,12 @@ export function Bolao() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Início das Apostas</label>
-                                <input 
-                                    name="startDate"
-                                    type="datetime-local" 
-                                    value={formData.startDate}
-                                    onChange={handleChange}
-                                    className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none" 
-                                />
-                            </div>
-
-                            <div>
                                 <label className="block text-sm text-gray-400 mb-1">Fechamento (Kick-off)</label>
                                 <input 
-                                    name="endDate"
-                                    type="datetime-local" 
-                                    value={formData.endDate}
+                                    name="dtFechamento"
+                                    type="date" 
+                                    value={formData.dtFechamento}
+                                    max={selectedGame ? selectedGame.data_hora.slice(0, 10) : ""}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded-lg p-3 text-white focus:border-primary focus:outline-none" 
                                 />
@@ -162,10 +181,10 @@ export function Bolao() {
                             <div className="relative w-36">
                                 <span className="absolute left-3 top-2 text-primary font-bold">R$</span>
                                 <input 
-                                    name="entryFee"
+                                    name="valor"
                                     type="number" 
                                     step="0.01"
-                                    value={formData.entryFee}
+                                    value={formData.valor}
                                     onChange={handleChange}
                                     className="w-full bg-dark border border-gray-600 rounded p-2 pl-8 text-white focus:border-primary outline-none" 
                                     placeholder="0.00" 
