@@ -19,5 +19,14 @@ export const walletService = {
         catch (error) {
             throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
         }
+    },
+    getExtrato: async () => {
+        try {
+            const response = await api.get('/carteira/extrato');
+            return response.data;
+        }
+        catch (error) {
+            throw error.response?.data || { message: 'Erro ao conectar com o servidor' };
+        }
     }
 }

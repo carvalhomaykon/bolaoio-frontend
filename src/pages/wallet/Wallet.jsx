@@ -7,6 +7,7 @@ import { ModalDeposit } from "./components/ModalDeposit";
 
 export function Wallet() {
     const [balance, setBalance] = useState(0);
+    const [extrato, setExtrato] = useState([]);
     
     useEffect(() => {
         const fetchBalance = async () => {
@@ -18,7 +19,17 @@ export function Wallet() {
             }
         };
 
+        const getExtrato = async () => {
+            try {
+                const extrato = await walletService.getExtrato();
+                setExtrato(extrato);
+            } catch (error) {
+                console.error("Erro ao obter extrato:", error);
+            }
+        };
+
         fetchBalance();
+        getExtrato();
     }, []);
 
     return (
@@ -29,7 +40,7 @@ export function Wallet() {
                         <Balance balance={balance} />
                         <DailyLimit />
                     </div>
-                    <TransactionHistory />
+                    <TransactionHistory extrato={extrato} />
                 </div>
             </div>
         </>

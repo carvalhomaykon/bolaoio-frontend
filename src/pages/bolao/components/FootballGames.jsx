@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 export function FootballGames({ games, onSelect, selectedGameId }) {
     const [searchTerm, setSearchTerm] = useState('');
 
+    
     const filteredGames = games.filter(game => {
-            const matchesStatus = game.status === 'Agendado';
+            const matchesStatus = game.statusPartida === 'Agendada';
             const matchesSearch =
-                game.time_mandante.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                game.time_visitante.nome.toLowerCase().includes(searchTerm.toLowerCase())
+                game.timeA.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                game.timeB.toLowerCase().includes(searchTerm.toLowerCase())
 
             return matchesStatus && matchesSearch;
         }
@@ -52,8 +53,8 @@ export function FootballGames({ games, onSelect, selectedGameId }) {
 
             {/* Lista de Jogos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
-                {filteredGames.length > 0 ? (
-                    filteredGames.map((game) => (
+                {games.length > 0 ? (
+                    games.map((game) => (
                         <div 
                             key={game.id}
                             onClick={() => onSelect(game)}
@@ -63,15 +64,12 @@ export function FootballGames({ games, onSelect, selectedGameId }) {
                                 : 'border-gray-700 bg-dark/40 hover:border-gray-500'
                             }`}
                         >
-                            {/* Info Superior */}
+                            {/* Info Superior  */}
                             <div className="flex justify-between items-center mb-4">
-                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                                    {game.fase}
-                                </span>
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                    game.status === 'Agendado' ? 'bg-blue-500/10 text-blue-400' : 'bg-primary/10 text-primary'
+                                    game.statusPartida === 'Agendada' ? 'bg-blue-500/10 text-blue-400' : 'bg-primary/10 text-primary'
                                 }`}>
-                                    {game.status}
+                                    {game.statusPartida}
                                 </span>
                             </div>
 
@@ -81,16 +79,16 @@ export function FootballGames({ games, onSelect, selectedGameId }) {
                                 <div className="flex flex-col items-center flex-1">
                                     <div className="w-14 h-10 mb-2 overflow-hidden rounded shadow-sm border border-gray-800">
                                         <img 
-                                            src={game.time_mandante.bandeira} 
-                                            alt={game.time_mandante.nome}
+                                            src={game.flagA} 
+                                            alt={game.timeA}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                             onError={(e) => { 
                                                 e.target.onerror = null; 
-                                                e.target.src = getFlagUrl(game.time_mandante); 
+                                                e.target.src = getFlagUrl(game.timeA); 
                                             }}
                                         />
                                     </div>
-                                    <span className="text-sm font-bold text-center">{game.time_mandante.nome}</span>
+                                    <span className="text-sm font-bold text-center">{game.timeA}</span>
                                 </div>
 
                                 <div className="px-4">
@@ -101,23 +99,22 @@ export function FootballGames({ games, onSelect, selectedGameId }) {
                                 <div className="flex flex-col items-center flex-1">
                                     <div className="w-14 h-10 mb-2 overflow-hidden rounded shadow-sm border border-gray-800">
                                         <img 
-                                            src={game.time_visitante.bandeira} 
-                                            alt={game.time_visitante.nome}
+                                            src={game.flagB} 
+                                            alt={game.timeB}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                             onError={(e) => { 
                                                 e.target.onerror = null; 
-                                                e.target.src = getFlagUrl(game.time_visitante); 
+                                                e.target.src = getFlagUrl(game.timeB); 
                                             }}
                                         />
                                     </div>
-                                    <span className="text-sm font-bold text-center">{game.time_visitante.nome}</span>
+                                    <span className="text-sm font-bold text-center">{game.timeB}</span>
                                 </div>
                             </div>
 
                             {/* Info Inferior */}
                             <div className="mt-4 pt-3 border-t border-gray-700/50 flex justify-between items-center text-[10px] text-gray-400">
-                                <span><i className="fa-solid fa-location-dot mr-1"></i> {game.cidade}</span>
-                                <span className="font-mono">{formatDate(game.data_hora)}</span>
+                                <span className="font-mono">{formatDate(game.data)}</span>
                             </div>
 
                             {/* Indicador de Seleção */}
